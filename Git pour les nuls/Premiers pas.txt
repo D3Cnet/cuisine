@@ -1,0 +1,45 @@
+se placer dans le dossier du projet
+
+creer le dépot : git init
+
+git status pour connaitre l'etat du dépot (workingcopy)
+
+Pour ajouter tous les fichiers
+git add .
+
+pour voir ce qui sera commité:
+git status
+
+Pour commit
+git commit -m "Premier commit"
+
+Pour voir tous les commit sur la branche en cours
+git log
+
+Lister les informations de conf du dépot
+git config -l
+
+
+Configurer pour le dépot en cours :
+git config user.name "D3Cnet"
+git config user.email "d3cnet@free.fr"
+
+designation du dépot distant qui s'appelle origin
+git remote add origin https://D3Cnet@github.com/D3Cnet/cuisine.git
+origin est trés souvent le nom du premier dépot distant
+
+pour pousser sur le depot distant
+git push -u origin master
+le -u (alias de --set-upstream) pour lui dire que ce que je pousse doit aller sur la branche master du depot origin
+pour les push suivants, pas besoin du -u (sauf si on veut l'envoyer vers un nouveau distant)
+
+
+
+Liste d'alias interessant :
+git config --global alias.st 'status'
+git config --global alias.co 'commit'
+git config --global alias.br 'branch'
+git config --global alias.ck 'checkout'
+git config --global alias.sh 'stash'
+git config --global alias.app 'apply'
+git config --global alias.logp "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
