@@ -4,6 +4,16 @@ creer le dépot : git init
 
 git status pour connaitre l'etat du dépot (workingcopy)
 
+Configurer pour le dépot en cours :
+git config user.name "D3Cnet"
+git config user.email "d3cnet@free.fr"
+
+designation du dépot distant qui s'appelle origin
+git remote add origin https://D3Cnet@github.com/D3Cnet/cuisine.git
+origin est trés souvent le nom du premier dépot distant
+
+
+
 Pour ajouter tous les fichiers
 git add .
 
@@ -18,15 +28,6 @@ git log
 
 Lister les informations de conf du dépot
 git config -l
-
-
-Configurer pour le dépot en cours :
-git config user.name "D3Cnet"
-git config user.email "d3cnet@free.fr"
-
-designation du dépot distant qui s'appelle origin
-git remote add origin https://D3Cnet@github.com/D3Cnet/cuisine.git
-origin est trés souvent le nom du premier dépot distant
 
 pour pousser sur le depot distant
 git push -u origin master
