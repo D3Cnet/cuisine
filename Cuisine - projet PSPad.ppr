@@ -1,0 +1,73 @@
+[Config]
+Compilator.SaveAll=0
+Compilator.Capture=0
+Compilator.HideOutput=0
+Compilator.ProgSaveAll=0
+Compilator.ProgRunSelection=0
+Compilator.LogType=0
+DefaultCPIndex=0
+LogtoEnd=1
+DontOpen=0
+AbsolutePath=0
+FileFormat=0
+ProjectFilesOnly=0
+[Project tree]
+Nouveau projet
+	+cuisine
+		+CSS
+			styles\modeleDomoNet.css
+		recette_visualisation_vue.php
+		recette_visualisation_action.php
+		recette_tablesParametres_vue.php
+		recette_tablesParametres_action.php
+		recette_suppression_vue.php
+		recette_suppression_action.php
+		recette_recherche_vue.php
+		recette_recherche_action.php
+		recette_impression.php
+		recette_edition_vue.php
+		recette_edition_action.php
+		recette_classeRecette.php
+		piedDePage.php
+		index.php
+		enteteDePage.php
+		constantes.php
+		Nouvelle recette.html
+		Cuisine - projet PSPad.ppr
+		annuaire_visualisation_vue.php
+		annuaire_visualisation_action.php
+		annuaire_classeAnnuaire.php
+		annuaire_edition_vue.php
+		annuaire_edition_action.php
+[Open project files]
+0=styles\base.css
+1=styles\modele07.css
+2=styles\modeleDomoNet.css
+3=recette_edition_vue.php
+4=recette_edition_action.php
+5=index.php
+6=enteteDePage.php
+[Selected Project Files]
+Main=
+Selected=enteteDePage.php
+[styles\base.css]
+TopLine=1
+Caret=1,1
+[styles\modele07.css]
+TopLine=1
+Caret=1,1
+[styles\modeleDomoNet.css]
+TopLine=1
+Caret=60,24
+[recette_edition_vue.php]
+TopLine=5
+Caret=1,1
+[recette_edition_action.php]
+TopLine=1
+Caret=27,30
+[index.php]
+TopLine=1
+Caret=46,4
+[enteteDePage.php]
+TopLine=21
+Caret=41,31

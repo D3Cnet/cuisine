@@ -1,0 +1,483 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+<title>Regular Expression Test Tool</title>
+<script src="index.php_fichiers/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-180004-2";
+urchinTracker();
+</script>
+<script type="text/javascript">
+function updateDimensions (fld) {
+  frm = fld.form;
+  frm.elements[fld.name+'_cols'].value = fld.cols;
+  frm.elements[fld.name+'_rows'].value = fld.rows;
+  return true;
+}
+
+function growField (id, dir) {
+  fld.style.width = '';
+  fld = getFieldById(id);
+  if (dir == 'H') {
+    fld.cols = fld.cols + 8;
+  }
+  else if (dir == 'V') {
+    fld.rows = fld.rows + 4;
+  }
+  else if (dir == 'HV' || dir == 'VH') {
+    fld.cols = fld.cols + 8;
+    fld.rows = fld.rows + 4;
+  }
+  updateDimensions(fld);
+  return true;
+}
+
+function contractField (id, dir) {
+  fld.style.width = '';
+  fld = getFieldById(id);
+  if (dir == 'H') {
+    if (fld.cols > 8) {
+      fld.cols = fld.cols - 8;
+    }
+  }
+  else if (dir == 'V') {
+    if (fld.rows > 4) {
+      fld.rows = fld.rows - 4;
+    }
+  }
+  else if (dir == 'HV' || dir == 'VH') {
+    if (fld.cols > 8) {
+      fld.cols = fld.cols - 8;
+    }
+    if (fld.rows > 4) {
+      fld.rows = fld.rows - 4;
+    }
+  }
+  updateDimensions(fld);
+  return true;
+}
+
+function fitField (id, dir) {
+  fld = getFieldById(id);
+  if (fld.style.width != '') {
+    fld.style.width = '';
+  }
+  else {
+    fld.style.width = document.body.offsetWidth - 80;
+  }
+  updateDimensions(fld);
+  return true;
+}
+
+function toggleField (id) {
+  fld = getFieldById(id);
+  if (fld.style.display == 'none') {
+    fld.style.display = 'block';
+  }
+  else {
+    fld.style.display = 'none';
+  }
+  return true;
+}
+
+function showField (id) {
+  fld = getFieldById(id);
+  fld.style.display = 'block';
+  return true;
+}
+
+function hideField (id) {
+  fld = getFieldById(id);
+  fld.style.display = 'none';
+  return true;
+}
+
+function recheckFields () {
+  // get form
+  val = getRadio('type');
+  
+  // perl or posix
+  if (val == 'perl') {
+    hideField('posix');
+    showField('perl');
+    hideField('posix_all');
+    switch (getRadio('perl_function')) {
+      case 'preg_match_all':
+        showField('preg_match_all');
+        hideField('preg_match');
+        hideField('preg_replace');
+        hideField('replace_table');
+        break;
+      case 'preg_match':
+        hideField('preg_match_all');
+        showField('preg_match');
+        hideField('preg_replace');
+        hideField('replace_table');
+        break;
+      case 'preg_replace':
+        hideField('preg_match_all');
+        hideField('preg_match');
+        showField('preg_replace');
+        showField('replace_table');
+        break;
+    }
+  }
+  else if (val == 'posix') {
+    hideField('perl');
+    showField('posix');
+    showField('posix_all');
+    hideField('preg_match_all');
+    hideField('preg_match');
+    hideField('preg_replace');
+    switch (getRadio('posix_function')) {
+      case 'ereg_replace':
+        showField('replace_table');
+        break;
+      case 'ereg':
+        hideField('replace_table');
+        break;
+    }
+  }
+  
+  return true;
+}
+
+function getRadio (nme) {
+  frm = getFieldById('regex_form');
+  cnt = frm.elements.length;
+  for (i = 0; i < cnt; i++) {
+    if (frm.elements[i].name == nme && frm.elements[i].checked) {
+      return frm.elements[i].value;
+    }
+  }
+  return true;
+}
+
+function getFieldById (fld) {
+  var thisdetail;
+  if (document.getElementById && document.getElementById(fld) != null) {
+    return document.getElementById(fld);
+  }
+  else if (document.layers && document.layers[fld] != null) {
+    return document.layers[fld];
+  }
+  else if (document.all) {
+    return document.all(fld);
+  }
+  else {
+    return true;
+  }
+}
+</script>
+<style>
+  body, div, td { font-family: Verdana, Arial; font-size: small; }
+  .help         { background-color: #EEEEEE; padding: 5px 5px 5px 5px; margin: 10px 0px 10px 0px; color: #555555; }
+  form          { margin: 0px 0px 0px 0px; }
+  input         { font-family: Verdana, Arial; font-size: small;  }
+  .result       { width: 100%; background-color: #eaffea; padding: 5px 5px 5px 5px; margin: color: #555555; border: solid #888888 1px; }
+  .error        { width: 100%; background-color: #ffaeae; padding: 5px 5px 5px 5px; margin: color: #555555; border: solid #888888 1px; }
+  .notice       { background-color: #ffffcc; padding: 5px 5px 5px 5px; margin: color: #555555; border: solid #ffcc00 1px; margin: 0px 0px 10px 0px; }
+</style>
+</head><body>
+<h1>Regular Expression Test Tool</h1>
+
+<div class="notice">Attention! We have recently fixed a bug that caused 
+problems with letter "e" in preg_replace expressions. Sorry for the 
+inconvenience and thanks to Solmetra Forums user Bobcat who reported 
+this problem.</div>
+
+<p>This service uses PHP regular expression functions as a base for its 
+operations. Nevertheless it can be useful for programmers of other 
+languages as well. Please use <a href="http://forums.solmetra.com/" target="_blank">Solmetra's forums</a> for support and bug reports.</p>
+
+<p><strong>Please note that no escaping is applied to supplied regular expressions. You got to escape your regexes properly yourself.</strong></p>
+
+Function called:<br>
+<textarea class="result" cols="60" rows="2">preg_match_all('{{your regular expression}}', '{{your data}}', $arr, PREG_PATTERN_ORDER);</textarea>
+<br><br>
+
+
+Function returned:<br>
+<textarea class="result" cols="60" rows="2">int(1)
+</textarea>
+<br><br>
+
+Resultset:<br>
+<textarea id="result" class="result" cols="60" rows="10">Array
+(
+    [0] =&gt; Array
+        (
+            [0] =&gt; define condition Ports_SOCKS
+	 url.port= (1080, 1935, 6537, 22, 2226, 3389, 990, 25851, 5389, 25445, 40001)
+	 url.port= (50160, 50161, 50162, 50163, 50164, 50165, 50166, 50167, 50168, 50169, 21)
+end condition P
+        )
+
+    [1] =&gt; Array
+        (
+            [0] =&gt; 
+        )
+
+    [2] =&gt; Array
+        (
+            [0] =&gt; Ports_SOCKS
+	 url.port= (1080, 1935, 6537, 22, 2226, 3389, 990, 25851, 5389, 25445, 40001)
+	 url.port= (50160, 50161, 50162, 50163, 50164, 50165, 50166, 50167, 50168, 50169, 21)
+
+        )
+
+)
+</textarea><br>
+<div align="right">
+<input value="-" onclick="contractField('result', 'V');" title="contract this field" style="width: 23px;" type="button">
+<input value="+" onclick="growField('result', 'V');" title="expand this field" style="width: 23px;" type="button">
+</div>
+<br><br>
+
+<form action="index.php" method="post" id="regex_form">
+<input name="process" value="y" type="hidden">
+<input name="regex_cols" value="60" type="hidden">
+<input name="regex_rows" value="5" type="hidden">
+<input name="data_cols" value="60" type="hidden">
+<input name="data_rows" value="5" type="hidden">
+<input name="replace_cols" value="60" type="hidden">
+<input name="replace_rows" value="2" type="hidden">
+<table>
+  <tbody><tr>
+    <td colspan="2">
+      Enter regular expression here:<br>
+      <textarea name="regex" id="regex" cols="60" rows="5">/define\scondition\s(\w)(.*)end\scondition\s\w+/msU</textarea>
+    </td>
+    <td valign="bottom">
+      <input value="%" onclick="fitField('regex', 'H');" title="fit to browser width" style="width: 23px;" type="button"><br>
+      <input value="-" onclick="contractField('regex', 'H');" title="contract this field" style="width: 23px;" type="button"><br>
+      <input value="+" onclick="growField('regex', 'H');" title="expand this field" style="width: 23px;" type="button">
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <input value="?" onclick="javascript:toggleField('regex_help');" style="width: 23px;" type="button">
+    </td>
+    <td align="right">
+      <input value="-" onclick="contractField('regex', 'V');" title="contract this field" style="width: 23px;" type="button">
+      <input value="+" onclick="growField('regex', 'V');" title="expand this field" style="width: 23px;" type="button">
+    </td>
+    <td>
+      <input value="+" onclick="growField('regex', 'HV');" title="expand this field" style="width: 23px;" type="button">
+    </td>
+  </tr>
+</tbody></table>
+<table id="regex_help" style="display: none;" class="help">
+  <tbody><tr>
+    <td>
+      Documentation links: PERL 
+      <a href="http://www.php.net/manual/en/ref.pcre.php" target="_blank">Intro</a>,
+      <a href="http://www.php.net/manual/en/reference.pcre.pattern.modifiers.php" target="_blank">Pattern Modifiers</a>,
+      <a href="http://www.php.net/manual/en/reference.pcre.pattern.syntax.php" target="_blank">Pattern Syntax</a>;
+      <a href="http://www.php.net/manual/en/ref.regex.php" target="_blank">POSIX</a>
+      <hr>
+      PERL pattern modifiers in brief:<br><br>
+      <strong>i</strong> - If this modifier is set, letters in the pattern match both upper and lower case letters.<br><br> 
+      <strong>m</strong> - When this modifier is set, the "start of 
+line" and "end of line" constructs match immediately following or 
+immediately before any newline in the subject string, respectively, as 
+well as at the very start and end.<br><br> 
+      <strong>s</strong> - If this modifier is set, a dot metacharacter in the pattern matches all characters, including newlines.<br><br>
+      <strong>x</strong> - If this modifier is set, whitespace data 
+characters in the pattern are totally ignored except when escaped or 
+inside a character class, and characters between an unescaped # outside a
+ character class and the next newline character, inclusive, are also 
+ignored.<br><br> 
+      <strong>A</strong> - If this modifier is set, the pattern is 
+forced to be "anchored", that is, it is constrained to match only at the
+ start of the string which is being searched (the "subject string").<br><br> 
+      <strong>D</strong> - If this modifier is set, a dollar metacharacter in the pattern matches only at the end of the subject string.<br><br> 
+      <strong>U</strong> - This modifier inverts the "greediness" of the
+ quantifiers so that they are not greedy by default, but become greedy 
+if followed by "?".<br><br>
+    </td>
+  </tr>
+</tbody></table>
+<table>
+  <tbody><tr>
+    <td>
+      Enter your data here:<br>
+      <textarea name="data" id="data" cols="60" rows="5">;------------------------;
+; Listes des ports SOCKS ;
+;------------------------;
+define condition Ports_SOCKS
+	 url.port= (1080, 1935, 6537, 22, 2226, 3389, 990, 25851, 5389, 25445, 40001)
+	 url.port= (50160, 50161, 50162, 50163, 50164, 50165, 50166, 50167, 50168, 50169, 21)
+end condition Ports_SOCKS
+</textarea>
+    </td>
+    <td valign="bottom">
+      <input value="%" onclick="fitField('data', 'H');" title="fit to browser width" style="width: 23px;" type="button"><br>
+      <input value="-" onclick="contractField('data', 'H');" title="contract this field" style="width: 23px;" type="button"><br>
+      <input value="+" onclick="growField('data', 'H');" title="expand this field" style="width: 23px;" type="button">
+    </td>
+  </tr>
+  <tr>
+    <td align="right">
+      <input value="-" onclick="contractField('data', 'V');" title="contract this field" style="width: 23px;" type="button">
+      <input value="+" onclick="growField('data', 'V');" title="expand this field" style="width: 23px;" type="button">
+    </td>
+    <td>
+      <input value="+" onclick="growField('data', 'HV');" title="expand this field" style="width: 23px;" type="button">
+    </td>
+  </tr>
+</tbody></table>
+<table style="display: none;" id="replace_table">
+  <tbody><tr>
+    <td>
+      Enter text to replace matches with here: (backreferences are ok)<br>
+      <textarea name="replace" id="replace" cols="60" rows="2"></textarea>
+    </td>
+    <td valign="bottom">
+      <input value="%" onclick="fitField('replace', 'H');" title="fit to browser width" style="width: 23px;" type="button"><br>
+      <input value="-" onclick="contractField('replace', 'H');" title="contract this field" style="width: 23px;" type="button"><br>
+      <input value="+" onclick="growField('replace', 'H');" title="expand this field" style="width: 23px;" type="button">
+    </td>
+  </tr>
+  <tr>
+    <td align="right">
+      <input value="-" onclick="contractField('replace', 'V');" title="contract this field" style="width: 23px;" type="button">
+      <input value="+" onclick="growField('replace', 'V');" title="expand this field" style="width: 23px;" type="button">
+    </td>
+    <td>
+      <input value="+" onclick="growField('replace', 'HV');" title="expand this field" style="width: 23px;" type="button">
+    </td>
+  </tr>
+</tbody></table>
+<table>
+  <tbody><tr>
+    <td colspan="2">
+      Regular expression options<br>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      Type:
+    </td>
+    <td>
+      <input name="type" value="perl" checked="checked" onclick="recheckFields();" type="radio"> PERL
+      <input name="type" value="posix" onclick="recheckFields();" type="radio"> POSIX
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      Function:
+    </td>
+    <td valign="top">
+      <div id="perl" style="display: block;">
+      <input name="perl_function" value="preg_match_all" checked="checked" onclick="recheckFields();" type="radio"> preg_match_all
+      <input name="perl_function" value="preg_match" onclick="recheckFields();" type="radio"> preg_match
+      <input name="perl_function" value="preg_replace" onclick="recheckFields();" type="radio"> preg_replace
+      <input value="?" onclick="javascript:toggleField('perl_help');" style="width: 23px;" type="button">
+      <br>
+      <div id="perl_help" class="help" style="display: none;">
+      <strong>preg_match_all</strong> - Perform a global regular expression match<br>
+      <strong>preg_match</strong> - Perform a regular expression match<br>
+      <strong>preg_replace</strong> - Perform a regular expression search and replace<br>
+      </div>
+      </div>
+      <div id="posix" style="display: none;">
+      <input name="posix_function" value="ereg" checked="checked" onclick="recheckFields();" type="radio"> ereg
+      <input name="posix_function" value="ereg_replace" onclick="recheckFields();" type="radio"> ereg_replace
+      <input name="ignore_case" value="y" checked="checked" type="checkbox"> ignore case
+      <input value="?" onclick="javascript:toggleField('posix_help');" style="width: 23px;" type="button">
+      <br>
+      <div id="posix_help" class="help" style="display: none;">
+      <strong>ereg</strong> - Regular expression match<br>
+      <strong>eregi_replace</strong> - Replace regular expression case insensitive<br>
+      </div>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top">
+      Flags:
+    </td>
+    <td>
+      <div id="preg_match_all" style="display: block;">
+        <select name="preg_match_all_flags">
+          <option value="1" selected="selected">PREG_PATTERN_ORDER (assumed by default)</option>
+          <option value="2">PREG_SET_ORDER</option>
+          <option value="256">PREG_OFFSET_CAPTURE</option>
+        </select>
+        <input value="?" onclick="javascript:toggleField('preg_match_all_help');" style="width: 23px;" type="button">
+        <br>
+        <div id="preg_match_all_help" class="help" style="display: none;">
+        <strong>PREG_PATTERN_ORDER</strong> - Orders results so that 
+$matches[0] is an array of full pattern matches, $matches[1] is an array
+ of strings matched by the first parenthesized subpattern, and so on.<br><br>
+        <strong>PREG_SET_ORDER</strong> - Orders results so that 
+$matches[0] is an array of first set of matches, $matches[1] is an array
+ of second set of matches, and so on.<br><br>
+        <strong>PREG_OFFSET_CAPTURE</strong> - If this flag is set, for 
+every occurring match the appendant string offset will also be returned.
+ Note that this changes the return value in an array where every element
+ is an array consisting of the matched string at offset 0 and it's 
+string offset into subject at offset 1. This flag is available since PHP
+ 4.3.0 .
+        </div>
+      </div>
+      <div id="preg_match" style="display: none;">
+        <select name="preg_match_flags">
+          <option selected="selected" value="">none</option>
+          <option value="256">PREG_OFFSET_CAPTURE</option>
+        </select>
+        <input value="?" onclick="javascript:toggleField('preg_match_help');" style="width: 23px;" type="button">
+        <br>
+        <div id="preg_match_help" class="help" style="display: none;">
+        <strong>PREG_OFFSET_CAPTURE</strong> - If this flag is set, for 
+every occurring match the appendant string offset will also be returned.
+ Note that this changes the return value in an array where every element
+ is an array consisting of the matched string at offset 0 and it's 
+string offset into subject at offset 1. This flag is available since PHP
+ 4.3.0.
+        </div>
+      </div>
+      <div id="preg_replace" style="display: none;">
+        <input size="10" name="limit" type="text"> limit 
+        <input value="?" onclick="javascript:toggleField('preg_replace_help');" style="width: 23px;" type="button">
+        <br>
+        <div id="preg_replace_help" class="help" style="display: none;">
+        <strong>limit</strong> - If limit is specified, then only limit matches will be replaced; if limit is omitted or is -1, then all matches are replaced.
+        </div>
+      </div>
+      <div id="posix_all" style="display: none;">
+        -- none --
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <br>
+      <input value="Run regular expression" type="submit">
+      &nbsp;&nbsp;&nbsp;
+      <a href="http://www.spaweditor.com/scripts/regex/index.php">Start Over</a>
+    </td>
+  </tr>
+</tbody></table>
+</form>
+
+<hr>
+2006-2011 © <a href="http://www.solmetra.com/">SOLMETRA</a><br><br>
+<div style="float: left;">
+<!--LiveInternet counter--><script type="text/javascript"><!--
+document.write('<a href="http://www.liveinternet.ru/click" '+
+'target=_blank><img src="http://counter.yadro.ru/hit?t44.1;r'+
+escape(document.referrer)+((typeof(screen)=='undefined')?'':
+';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?
+screen.colorDepth:screen.pixelDepth))+';u'+escape(document.URL)+
+';'+Math.random()+
+'" alt="" title="LiveInternet" '+
+'border=0 width=31 height=31><\/a>')//--></script><a href="http://www.liveinternet.ru/click" target="_blank"><img src="index.php_fichiers/hit.gif" alt="" title="LiveInternet" border="0" height="31" width="31"></a><!--/LiveInternet-->
+</div>
+
+<ul>
+<li style="margin: 0pt; clear: none; padding: 0pt; float: left; display: block; width: 13%;">  <a href="http://www.marketminder.com/">Fisher Investments</a>  </li>
+</ul>
+</body></html>

@@ -1,0 +1,103 @@
+
+<form id="formulaire_visualiserRecette" name="formulaire_visualiserRecette" action="recette_visualisation.php" METHOD="post">
+
+{{ script_saisie_recette|raw }}
+
+<h1>Consulter une recette</h1>
+<br>
+
+<table class="contenuForm" style="white-space:nowrap;">
+	<tr>
+	<td>Nom de la recette : </td>
+	<td class="ui-widget">
+
+{% if post|length == 0 %}
+  {% if not get.idRecette is null %}
+    <input id="liste_recettes" style="width: 300px;" name="libelle_recette" value="{{ recette.libelle }}" />
+  {% else %}
+    <input id="liste_recettes" style="width: 300px;" name="libelle_recette"/>
+  {% endif %}
+{% else %}
+    <input id="liste_recettes" style="width: 300px;" name="libelle_recette" value="{{ post.libelle_recette }}" />
+{% endif %}
+
+  </td>
+	<td>
+		<input type="submit" value="Afficher" name="button_AfficherRecette"></input>
+
+{% if (not post|length == 0) or (not get.idRecette is null) %}
+  			<input type="button" value="Imprimer" name="button_Imprimer" onclick="window.location.href='recette_visualisation.php?impression=1&idRecette={{ recette.id }}'"></input>
+  			<input type="button" value="Editer" name="button_EditerRecette2" onclick="window.location.href='recette_edition_vue.php?idRecette={{ recette.id }}'"></input>
+{% endif %}
+  </td>
+	</tr>
+</table>
+
+
+{% if (not post.button_AfficherRecette is null) or (not get.idRecette is null) %}
+
+<div class="recetteVisuTitre">{{ recette.libelle }}</div>
+
+
+<label>Classement :&nbsp;{{ lireClassement }}</label>
+<br /><br />
+<table style="text-align: left; width: 100%; height: 40px;" border="0" cellpadding="2" cellspacing="2">
+<tbody>
+	<tr>
+		<td>Difficulté : 
+{% for i in 1..5 %}
+  {% if i <= recette.difficulte %}
+    <img alt="Difficulte" title="Difficulte" src="images/cheff_16_allume.png">
+  {% else %}
+    <img alt="Difficulte" title="Difficulte" src="images/cheff_16.png">    
+  {% endif %}
+{% endfor %}
+
+    </td>
+
+		<td>Appréciation : 
+{% for i in 1..5 %}
+  {% if i <= recette.appreciation %}
+    <img alt="Appreciation" title="Appreciation" src="images/favorits_16_allume.png">
+  {% else %}
+    <img alt="Appreciation" title="Appreciation" src="images/cheff_16.png">    
+  {% endif %}
+{% endfor %}
+
+		</td>
+	</tr>
+	<tr>
+		<td>
+      Temps de préparation : {{ recette.tempsPreparation }} 
+		</td>
+		<td>
+      Temps de cuisson : {{ recette.tempsCuisson }} 
+		</td>
+	</tr>
+</tbody>
+</table>
+
+<div class="recetteVisuSousTitre">Commentaire</div>
+{{ recette_commentaire|raw }}
+
+<div class="recetteVisuSousTitre">Ingrédients</div>
+<ul>
+{% for ingredient in recette.ingredients %}
+  <li>
+    {{ ingredient.quantite }}
+    {% if ingredient.nomunite != 'inconnu' %}
+      &nbsp;{{ ingredient.nomunite }}
+    {% endif %}
+    &nbsp;{{ ingredient.nomingredient }}
+  </li>
+{% endfor %}
+
+</ul>
+
+<div class="recetteVisuSousTitre">Préparation</div>
+{{ recette_preparation|raw }}
+
+{% endif %}
+
+</form>
+
