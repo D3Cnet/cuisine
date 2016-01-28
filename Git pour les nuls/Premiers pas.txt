@@ -13,6 +13,11 @@ git remote add origin https://D3Cnet@github.com/D3Cnet/cuisine.git
 origin est trés souvent le nom du premier dépot distant
 
 
+Pour installer un projet existant sur une autre machine
+git clone https://D3Cnet@github.com/D3Cnet/cuisine.git
+Par défaut il s'installera dans le répertoire cuisine (venu de cuisine.git de l'adresse)
+
+
 
 Pour ajouter tous les fichiers
 git add .
