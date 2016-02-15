@@ -28,7 +28,7 @@
   if (isset($_GET['action'])) {
     session_destroy();
     session_start();
-    $_SESSION['dateConnexion'] = date();
+    $_SESSION['dateConnexion'] = date('Y-m-d');
   }
 
   if(!isset($_SESSION['connecte'])){
